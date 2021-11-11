@@ -6,7 +6,7 @@ export const ColorContext = React.createContext();
 
 const ColorProvider = ({ children }) => {
   const [mode, setMode] = React.useState("dark");
-  const [user, setUser] = React.useState(true);
+  const [user, setUser] = React.useState(false);
 
   const colorMode = React.useMemo(
     () => ({

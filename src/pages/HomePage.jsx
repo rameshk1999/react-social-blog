@@ -23,7 +23,6 @@ export default function HomePage() {
     instance.get("api/categories/getall").then((res) => {
       if (res.status === 200) {
         setCategories(res.data.data);
-        console.log(res.data.data);
       }
     });
   }, []);
