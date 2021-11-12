@@ -14,6 +14,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ColorContext } from "../../contexts/ColorContext";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -27,6 +28,8 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function RecipeReviewCard({ post }) {
+  const { DateConvertor } = React.useContext(ColorContext);
+
   return (
     <Card sx={{ maxWidth: 450, m: 2 }}>
       <CardHeader
@@ -41,7 +44,7 @@ export default function RecipeReviewCard({ post }) {
           </IconButton>
         }
         title={post.title}
-        subheader="September 14, 2016"
+        subheader={DateConvertor(post.updatedAt)}
       />
       <CardMedia
         component="img"

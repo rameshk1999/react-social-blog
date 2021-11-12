@@ -1,14 +1,24 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export const ColorContext = React.createContext();
 
 const ColorProvider = ({ children }) => {
   const [mode, setMode] = React.useState("dark");
   const [user, setUser] = React.useState();
-  const navigate = useNavigate();
+
+  const DateConvertor = (data) => {
+    var arr = data.split("T");
+    var today = moment().format().split("T")[0];
+    var common = moment(arr[0], "YYYY-MM-DD").fromNow();
+    var newArr = moment().format("MMMM Do YYYY, h:mm:ss a", data).split(",");
+    var newform = moment().calendar(data);
+    console.log(newform);
+    if (arr[0] === today) return `today at ${newArr[1]}`;
+    return newArr[0];
+  };
 
   React.useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user-data"));
@@ -39,7 +49,7 @@ const ColorProvider = ({ children }) => {
   );
 
   return (
-    <ColorContext.Provider value={{ colorMode, user, authUser }}>
+    <ColorContext.Provider value={{ colorMode, user, DateConvertor, authUser }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
