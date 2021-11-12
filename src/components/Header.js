@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Sidebar from "./Sidebar";
@@ -15,6 +15,7 @@ import Avatar from "@mui/material/Avatar";
 
 export default function ButtonAppBar() {
   const theme = useTheme();
+
   const history = useNavigate();
   const { colorMode, user } = React.useContext(ColorContext);
 

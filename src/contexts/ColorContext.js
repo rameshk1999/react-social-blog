@@ -6,7 +6,12 @@ export const ColorContext = React.createContext();
 
 const ColorProvider = ({ children }) => {
   const [mode, setMode] = React.useState("dark");
-  const [user, setUser] = React.useState(true);
+  const [user, setUser] = React.useState();
+
+  React.useEffect(() => {
+    let userData = JSON.parse(localStorage.getItem("user-data"));
+    setUser(userData);
+  }, []);
 
   const colorMode = React.useMemo(
     () => ({
@@ -32,7 +37,7 @@ const ColorProvider = ({ children }) => {
   );
 
   return (
-    <ColorContext.Provider value={{ colorMode, user }}>
+    <ColorContext.Provider value={{ colorMode, user, authUser }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}

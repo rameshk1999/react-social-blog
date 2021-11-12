@@ -12,6 +12,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import instance from "../config/axios";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { ColorContext } from "../contexts/ColorContext";
 
 function Copyright(props) {
   return (
@@ -34,13 +38,39 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const { enqueueSnackbar } = useSnackbar();
+  const colorMode = React.useContext(ColorContext);
+  console.log(colorMode);
+  const navigate = useNavigate();
+  const handleClickVariant = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Login Successful", variant);
+  };
+  const handleClickError = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Wrong Credintials", variant);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
+
+    const payload = {
+      username: data.get("username"),
       password: data.get("password"),
+    };
+
+    instance.post("api/auth/login", payload).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        handleClickVariant("success");
+        localStorage.setItem("user-data", JSON.stringify(res.data.data));
+        navigate("/");
+        window.location.reload();
+      } else {
+        handleClickError("error");
+      }
     });
   };
 
@@ -66,10 +96,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="User Name"
+            name="username"
+            autoComplete="username"
             autoFocus
           />
           <TextField

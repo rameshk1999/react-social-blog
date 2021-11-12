@@ -12,6 +12,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import instance from "../config/axios";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -34,13 +37,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Post created");
+  };
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
+
+    const payload = {
       email: data.get("email"),
       password: data.get("password"),
+      username: data.get("username"),
+    };
+
+    instance.post("api/auth/register", payload).then((res) => {
+      if (res.status === 200) {
+        handleClickVariant("success");
+        navigate("/signin");
+      }
     });
   };
 

@@ -22,11 +22,17 @@ import GridOnIcon from "@mui/icons-material/GridOn";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import MyPosts from "./MyPosts";
 import FavouritePosts from "./FavouritePost";
 import LikedPosts from "./LikedPosts";
 import Modal from "@mui/material/Modal";
+import instance from "../../config/axios";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { ColorContext } from "../../contexts/ColorContext";
 
 const Input = styled("input")({
   display: "none",
@@ -49,41 +55,175 @@ const ProfilePage = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [url, setUrl] = React.useState("");
+  const [image, setImage] = React.useState("");
+  const [caption, SetCaption] = React.useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const [posts, setPosts] = React.useState();
+  const [loading, setLoading] = React.useState(false);
+  const [photos, setPhotos] = React.useState([]);
+  const [password, setPassword] = React.useState("");
+  const [edit, setEdit] = React.useState(false);
+  const [dele, setDele] = React.useState(false);
+  const { user } = React.useContext(ColorContext);
+
+  React.useEffect(() => {
+    setLoading(true);
+    instance
+      .get(`/api/posts/getall?user=${user?.username}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setPosts(res.data.data);
+          setLoading(false);
+          setPhotos(res.data.data.filter((post) => post.photo));
+          console.log(
+            "post",
+            res.data.data.filter((post) => post.photo),
+            res.data.data
+          );
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+  }, [user?.username]);
+
+  const handleClickVariant = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Post created");
+  };
+
+  const handleClickUpdate = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(dele ? "Account Deleted" : "Profile Updated");
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const uploadImage = (e) => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "yywae307");
+    data.append("cloud_name", "dtxgfrzye");
+    fetch("  https://api.cloudinary.com/v1_1/dtxgfrzye/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setUrl(data.url);
+        console.log(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let payload = {
+      desc: caption,
+      username: user.username,
+      title: user.username,
+      photo: url,
+    };
+
+    instance
+      .post("api/posts/create", payload)
+      .then((res) => {
+        if (res.status === 201) {
+          handleClose();
+          handleClickVariant("success");
+          window.setTimeout(function () {
+            window.location.reload();
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleUpload = () => {
+    setEdit(true);
+    handleOpen();
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("user-data");
+    window.setTimeout(function () {
+      window.location.reload();
+    }, 1000);
+  };
+
+  const updateProfile = (e) => {
+    e.preventDefault();
+    const payload = {
+      userId: user?._id,
+      username: user?.username,
+      password: password,
+      profileImage: url,
+    };
+    instance.put(`api/users/${user?._id}`, payload).then((res) => {
+      if (res.status === 200) {
+        handleClose();
+        handleClickUpdate("success");
+        handleLogout();
+      }
+    });
+  };
+
+  const handleDeleteAccount = (e) => {
+    e.preventDefault();
+    setEdit(true);
+    setDele(true);
+    const payload = {
+      userId: user?._id,
+      username: user?.username,
+      password: password,
+    };
+    instance.delete(`api/users/${user?._id}`, payload).then((res) => {
+      if (res.status === 200) {
+        if (res.status === 200) {
+          handleClose();
+          handleClickUpdate("success");
+          handleLogout();
+        }
+      }
+    });
+  };
+
   return (
     <Container maxWidth="md">
-      <Box m={4}>
+      <Box m={4} sx={{ justifyContent: "center" }}>
         <Paper>
           <Stack
             direction="row"
             justifyContent="center"
             alignItems="center"
-            spacing={4}
+            spacing={2}
           >
             <label htmlFor="icon-button-file">
-              <Input accept="image/*" id="icon-button-file" type="file" />
+              {/* <Input accept="image/*" id="icon-button-file" type="file" /> */}
               <IconButton
                 color="primary"
                 aria-label="upload picture"
                 component="span"
+                onClick={handleUpload}
               >
                 <Avatar
-                  alt="Remy Sharp"
-                  src="/static/images/avatar/1.jpg"
+                  alt={user?.username}
+                  src={user?.profileImage}
                   sx={{ width: 76, height: 76 }}
                 />
               </IconButton>
             </label>
 
             <label htmlFor="icon-button-file">
-              <Typography variant="h6">user name</Typography>
-              <Typography variant="body2">Email</Typography>
+              <Typography variant="h6">{user?.username}</Typography>
+              <Typography variant="body2">{user?.email}</Typography>
             </label>
 
-            <Button
+            {/* <Button
               color="primary"
               variant="outlined"
               aria-label="upload picture"
@@ -92,10 +232,10 @@ const ProfilePage = () => {
               <EditIcon />
               {"   "}
               <Typography variant="body2">Edit Profile</Typography>
-            </Button>
+            </Button> */}
 
             <Button
-              onClick={handleOpen}
+              onClick={user ? handleOpen : navigate("/signin")}
               color="primary"
               variant="outlined"
               aria-label="upload picture"
@@ -104,6 +244,29 @@ const ProfilePage = () => {
               <AddCircleIcon />
               {"   "}
               <Typography variant="body2">Add Post</Typography>
+            </Button>
+
+            <Button
+              color="primary"
+              variant="outlined"
+              aria-label="upload picture"
+              component="span"
+              onClick={handleDeleteAccount}
+            >
+              <DeleteIcon />
+              {"   "}
+              <Typography variant="body2">Account</Typography>
+            </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              aria-label="upload picture"
+              component="span"
+              onClick={handleLogout}
+            >
+              <ExitToAppIcon />
+              {"   "}
+              <Typography variant="body2">Logout</Typography>
             </Button>
           </Stack>
         </Paper>
@@ -126,7 +289,11 @@ const ProfilePage = () => {
               </TabList>
             </Box>
             <TabPanel value={1}>
-              <MyPosts />
+              {posts && posts.length ? (
+                <MyPosts posts={posts} />
+              ) : (
+                "You have no Posts yet "
+              )}
             </TabPanel>
             <TabPanel value={2}>
               <FavouritePosts />
@@ -144,52 +311,138 @@ const ProfilePage = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Box
-            sx={{
-              textAlign: "center",
-              "& .MuiTextField-root": { m: 1 },
-            }}
-          >
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Create Post
-            </Typography>
-            <Divider flexItem />
-            <form>
-              <TextField
-                id="outlined-basic"
-                label="Title"
-                variant="outlined"
-                fullWidth
-              />
-              <TextField
-                id="outlined-basic"
-                label="Desc"
-                variant="outlined"
-                fullWidth
-              />
-              <label htmlFor="icon-button-file">
-                <Input accept="image/*" id="icon-button-file" type="file" />
+        {edit ? (
+          <Box sx={style}>
+            <Box
+              sx={{
+                textAlign: "center",
+                "& .MuiTextField-root": { m: 1 },
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Create Post
+              </Typography>
+              <Divider flexItem />
+              <form>
+                {dele && (
+                  <label htmlFor="icon-button-file">
+                    <input
+                      style={{
+                        height: 100,
+                        width: 200,
+                        borderBlockColor: "WindowFrame",
+                      }}
+                      type="file"
+                      title="Select Image"
+                      accept="image/*"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+
+                    {/*                  
+                <Input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files[0])}
+                /> */}
+                    <Button
+                      sx={{ width: "100%", hight: "100%", marginY: 2 }}
+                      color="primary"
+                      aria-label="upload picture"
+                      onClick={uploadImage}
+                    >
+                      <FileUploadIcon /> {"   "} upload Image
+                    </Button>
+                  </label>
+                )}
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                />
+
                 <Button
-                  sx={{ width: "100%", hight: "100%", marginY: 2 }}
-                  color="primary"
-                  aria-label="upload picture"
-                  component="span"
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  fullWidth
+                  color="secondary"
+                  onClick={updateProfile}
                 >
-                  <FileUploadIcon /> upload Image
+                  Continue
                 </Button>
-              </label>
-              <Button
-                variant="contained"
-                endIcon={<SendIcon />}
-                fullWidth
-                color="secondary"
-              >
-                Continue
-              </Button>
-            </form>
+              </form>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <Box sx={style}>
+            <Box
+              sx={{
+                textAlign: "center",
+                "& .MuiTextField-root": { m: 1 },
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Create Post
+              </Typography>
+              <Divider flexItem />
+              <form>
+                <TextField
+                  id="outlined-basic"
+                  label="Caption"
+                  variant="outlined"
+                  value={caption}
+                  onChange={(e) => SetCaption(e.target.value)}
+                  fullWidth
+                />
+                <label htmlFor="icon-button-file">
+                  <input
+                    style={{
+                      height: 100,
+                      width: 200,
+                      borderBlockColor: "WindowFrame",
+                    }}
+                    type="file"
+                    title="Select Image"
+                    accept="image/*"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+
+                  {/*                  
+                <Input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files[0])}
+                /> */}
+                  <Button
+                    sx={{ width: "100%", hight: "100%", marginY: 2 }}
+                    color="primary"
+                    aria-label="upload picture"
+                    onClick={uploadImage}
+                  >
+                    <FileUploadIcon /> {"   "} upload Image
+                  </Button>
+                </label>
+                <Button
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  fullWidth
+                  color="secondary"
+                  onClick={handleSubmit}
+                >
+                  Continue
+                </Button>
+              </form>
+            </Box>
+          </Box>
+        )}
       </Modal>
     </Container>
   );
