@@ -8,7 +8,7 @@ import {
   Divider,
   TextField,
 } from "@mui/material";
-import { Box, textAlign } from "@mui/system";
+import { Box } from "@mui/system";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -21,6 +21,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import SendIcon from "@mui/icons-material/Send";
 import MyPosts from "./MyPosts";
 import FavouritePosts from "./FavouritePost";
 import LikedPosts from "./LikedPosts";
@@ -150,29 +152,39 @@ const ProfilePage = () => {
             }}
           >
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              EDIT PROFILE
+              Create Post
             </Typography>
             <Divider flexItem />
             <form>
               <TextField
                 id="outlined-basic"
-                label="username"
+                label="Title"
                 variant="outlined"
                 fullWidth
               />
               <TextField
                 id="outlined-basic"
-                label="email"
+                label="Desc"
                 variant="outlined"
                 fullWidth
               />
-              <TextField
-                id="outlined-basic"
-                label="password"
-                variant="outlined"
+              <label htmlFor="icon-button-file">
+                <Input accept="image/*" id="icon-button-file" type="file" />
+                <Button
+                  sx={{ width: "100%", hight: "100%", marginY: 2 }}
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                >
+                  <FileUploadIcon /> upload Image
+                </Button>
+              </label>
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
                 fullWidth
-              />
-              <Button variant="contained" fullWidth color="secondary">
+                color="secondary"
+              >
                 Continue
               </Button>
             </form>
