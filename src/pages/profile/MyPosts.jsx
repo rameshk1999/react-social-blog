@@ -25,7 +25,7 @@ const MyPosts = ({ posts }) => {
           posts.length &&
           posts.map((item) => (
             <ImageListItem
-              key={item.img}
+              key={item._id}
               cols={item.cols || 1}
               rows={item.rows || 1}
             >

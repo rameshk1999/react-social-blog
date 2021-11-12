@@ -33,6 +33,7 @@ import instance from "../../config/axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { ColorContext } from "../../contexts/ColorContext";
+import storage from "../../config/firebase";
 
 const Input = styled("input")({
   display: "none",
@@ -103,21 +104,49 @@ const ProfilePage = () => {
     setValue(newValue);
   };
 
+  const handleFireBaseUpload = (e) => {
+    if (image == null) return;
+    storage
+      .ref("images")
+      .child("/myimages")
+      .getDownloadURL()
+      .then((fireBaseUrl) => {
+        console.log(fireBaseUrl);
+        setUrl((prevObject) => ({ ...prevObject, imgUrl: fireBaseUrl }));
+      });
+  };
+
   const uploadImage = (e) => {
-    const data = new FormData();
-    data.append("file", image);
-    data.append("upload_preset", "yywae307");
-    data.append("cloud_name", "dtxgfrzye");
-    fetch("  https://api.cloudinary.com/v1_1/dtxgfrzye/image/upload", {
-      method: "post",
-      body: data,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        setUrl(data.url);
-        console.log(data.url);
-      })
-      .catch((err) => console.log(err));
+    e.preventDefault();
+    console.log("start of upload");
+    // async magic goes here...
+    if (image === "") {
+      console.error(`not an image, the image file is a ${typeof image}`);
+    }
+    const uploadTask = storage.ref(`/images/${image.name}`).put(image);
+    //initiates the firebase side uploading
+    uploadTask.on(
+      "state_changed",
+      (snapShot) => {
+        //takes a snap shot of the process as it is happening
+        console.log(snapShot);
+      },
+      (err) => {
+        //catches the errors
+        console.log(err);
+      },
+      () => {
+        // gets the functions from storage refences the image storage in firebase by the children
+        // gets the download url then sets the image from firebase as the value for the imgUrl key:
+        storage
+          .ref("images")
+          .child(image.name)
+          .getDownloadURL()
+          .then((fireBaseUrl) => {
+            setUrl(fireBaseUrl);
+          });
+      }
+    );
   };
 
   const handleSubmit = (e) => {
@@ -152,7 +181,7 @@ const ProfilePage = () => {
     localStorage.removeItem("user-data");
     window.setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 500);
   };
 
   const updateProfile = (e) => {
@@ -445,6 +474,7 @@ const ProfilePage = () => {
                   variant="contained"
                   endIcon={<SendIcon />}
                   fullWidth
+                  disabled={!url}
                   color="secondary"
                   onClick={handleSubmit}
                 >
