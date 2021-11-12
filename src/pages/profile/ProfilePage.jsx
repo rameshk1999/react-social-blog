@@ -157,39 +157,50 @@ const ProfilePage = () => {
 
   const updateProfile = (e) => {
     e.preventDefault();
-    const payload = {
+    let payload1 = {
       userId: user?._id,
       username: user?.username,
       password: password,
       profileImage: url,
     };
-    instance.put(`api/users/${user?._id}`, payload).then((res) => {
-      if (res.status === 200) {
-        handleClose();
-        handleClickUpdate("success");
-        handleLogout();
-      }
-    });
-  };
-
-  const handleDeleteAccount = (e) => {
-    e.preventDefault();
-    setEdit(true);
-    setDele(true);
-    const payload = {
-      userId: user?._id,
-      username: user?.username,
-      password: password,
-    };
-    instance.delete(`api/users/${user?._id}`, payload).then((res) => {
-      if (res.status === 200) {
+    instance
+      .put(`api/users/${user?._id}`, payload1)
+      .then((res) => {
         if (res.status === 200) {
           handleClose();
           handleClickUpdate("success");
           handleLogout();
         }
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleDele = (e) => {
+    e.preventDefault();
+    setEdit(true);
+    setDele(true);
+    handleOpen();
+  };
+  const handleDeleteAccount = (e) => {
+    let payload2 = {
+      userId: user?._id,
+      username: user?.username,
+      password: password,
+    };
+    instance
+      .delete(`api/users/${user?._id}`, { data: payload2 })
+      .then((res) => {
+        if (res.status === 200) {
+          handleClose();
+          handleClickUpdate("success");
+          handleLogout();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -240,8 +251,8 @@ const ProfilePage = () => {
               variant="outlined"
               aria-label="upload picture"
               component="span"
+              endIcon={<AddCircleIcon />}
             >
-              <AddCircleIcon />
               {"   "}
               <Typography variant="body2">Add Post</Typography>
             </Button>
@@ -251,9 +262,9 @@ const ProfilePage = () => {
               variant="outlined"
               aria-label="upload picture"
               component="span"
-              onClick={handleDeleteAccount}
+              startIcon={<DeleteIcon />}
+              onClick={handleDele}
             >
-              <DeleteIcon />
               {"   "}
               <Typography variant="body2">Account</Typography>
             </Button>
@@ -262,9 +273,9 @@ const ProfilePage = () => {
               variant="contained"
               aria-label="upload picture"
               component="span"
+              endIcon={<ExitToAppIcon />}
               onClick={handleLogout}
             >
-              <ExitToAppIcon />
               {"   "}
               <Typography variant="body2">Logout</Typography>
             </Button>
@@ -324,7 +335,7 @@ const ProfilePage = () => {
               </Typography>
               <Divider flexItem />
               <form>
-                {dele && (
+                {!dele && (
                   <label htmlFor="icon-button-file">
                     <input
                       style={{
@@ -373,7 +384,7 @@ const ProfilePage = () => {
                   endIcon={<SendIcon />}
                   fullWidth
                   color="secondary"
-                  onClick={updateProfile}
+                  onClick={dele ? handleDeleteAccount : updateProfile}
                 >
                   Continue
                 </Button>

@@ -9,18 +9,16 @@ import Profile from "./pages/profile/ProfilePage";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Box>
-        <Layout>
-          <Routes>
-            <Route exact path="/" element={<HomePage />} />
-            <Route exact path="/signin" element={<SignIn />} />
-            <Route exact path="/signup" element={<SignUp />} />
-            <Route exact path="/profile" element={<Profile />} />
-          </Routes>
-        </Layout>
-      </Box>
-    </BrowserRouter>
+    <Box>
+      <Layout>
+        <Routes>
+          <Route exact path="/" element={<HomePage />} />
+          <Route exact path="/signin" element={<SignIn />} />
+          <Route exact path="/signup" element={<SignUp />} />
+          <Route exact path="/profile" element={<Profile />} />
+        </Routes>
+      </Layout>
+    </Box>
   );
 };
 

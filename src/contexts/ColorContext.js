@@ -1,15 +1,17 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const ColorContext = React.createContext();
 
 const ColorProvider = ({ children }) => {
   const [mode, setMode] = React.useState("dark");
   const [user, setUser] = React.useState();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    let userData = JSON.parse(localStorage.getItem("user-data"));
+    const userData = JSON.parse(localStorage.getItem("user-data"));
     setUser(userData);
   }, []);
 
