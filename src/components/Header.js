@@ -8,10 +8,10 @@ import IconButton from "@mui/material/IconButton";
 import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Sidebar from "./Sidebar";
 import { ColorContext } from "../contexts/ColorContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
 
 export default function ButtonAppBar() {
   const theme = useTheme();
@@ -32,8 +32,12 @@ export default function ButtonAppBar() {
             Flukes
           </Typography>
           {user ? (
-            <IconButton sx={{ ml: 1 }} color="inherit">
-              <AccountCircleIcon />
+            <IconButton
+              sx={{ ml: 1 }}
+              color="inherit"
+              onClick={() => history("/profile")}
+            >
+              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
             </IconButton>
           ) : (
             <div>
