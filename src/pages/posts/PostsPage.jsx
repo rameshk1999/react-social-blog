@@ -45,9 +45,9 @@ const PostsPage = () => {
 
   return (
     <Fragment>
-      {posts &&
-        posts.length &&
-        posts.map((post) => <PostCard key={post._id} post={post} />)}
+      {posts && posts.length
+        ? posts.map((post) => <PostCard key={post._id} post={post} />)
+        : ""}
     </Fragment>
   );
 };

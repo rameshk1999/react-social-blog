@@ -30,7 +30,7 @@ export default function ButtonAppBar() {
             component="div"
             sx={{ flexGrow: 1 }}
           >
-            Flukes
+            Seven
           </Typography>
           {user ? (
             <IconButton
