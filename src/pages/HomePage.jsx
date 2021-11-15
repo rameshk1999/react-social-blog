@@ -6,7 +6,7 @@ import CategoryPage from "./categories/CategoryPage";
 export default function HomePage() {
   return (
     <Container maxWidth="md">
-      <Grid container direction="row" spacing={3}>
+      <Grid container direction="row" spacing={4}>
         <Grid item xs="12" md="7">
           <PostsPage />
         </Grid>

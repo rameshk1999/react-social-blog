@@ -15,6 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ColorContext } from "../../contexts/ColorContext";
+import axios from "../../config/axios";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -27,8 +28,11 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function RecipeReviewCard({ post }) {
-  const { DateConvertor } = React.useContext(ColorContext);
+export default function RecipeReviewCard({ post, addLike, unLike }) {
+  const { DateConvertor, user } = React.useContext(ColorContext);
+  const result = post?.likes.includes(user?._id);
+
+  // console.log(result); // true
 
   return (
     <Card sx={{ maxWidth: 450, m: 2 }}>
@@ -58,9 +62,13 @@ export default function RecipeReviewCard({ post }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton
+          aria-label="add to favorites"
+          onClick={() => (result ? unLike(post?._id) : addLike(post?._id))}
+        >
+          <FavoriteIcon color={result ? "error" : ""} />
         </IconButton>
+        {post?.likes?.length}
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
