@@ -16,6 +16,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ColorContext } from "../../contexts/ColorContext";
 import axios from "../../config/axios";
+import { useNavigate } from "react-router-dom";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -30,6 +32,9 @@ const ExpandMore = styled((props) => {
 
 export default function RecipeReviewCard({ post, addLike, unLike }) {
   const { DateConvertor, user } = React.useContext(ColorContext);
+  let navigate = useNavigate();
+  const [copied, setCopied] = React.useState(false);
+
   const result = post?.likes.includes(user?._id);
 
   // console.log(result); // true
@@ -52,6 +57,7 @@ export default function RecipeReviewCard({ post, addLike, unLike }) {
       />
       <CardMedia
         component="img"
+        onClick={() => navigate(`posts/${post._id}`)}
         height="194"
         image={post.photo ? post.photo : "/static/images/cards/paella.jpg"}
         alt="Paella dish"
@@ -68,10 +74,21 @@ export default function RecipeReviewCard({ post, addLike, unLike }) {
         >
           <FavoriteIcon color={result ? "error" : ""} />
         </IconButton>
+        <input
+          style={{ display: "none" }}
+          type="text"
+          value={`https://react-social-blog.vercel.app/posts/${post._id}`}
+        />
         {post?.likes?.length}
         <IconButton aria-label="share">
-          <ShareIcon />
+          <CopyToClipboard
+            text={`https://react-social-blog.vercel.app/posts/${post._id}`}
+            onCopy={() => setCopied(true)}
+          >
+            <ShareIcon />
+          </CopyToClipboard>
         </IconButton>
+        {copied && <p>copied</p>}
         {/** 
         <ExpandMore
           expand={expanded}

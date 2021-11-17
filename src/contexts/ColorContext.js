@@ -15,9 +15,13 @@ const ColorProvider = ({ children }) => {
     var common = moment(arr[0], "YYYY-MM-DD").fromNow();
     var newArr = moment().format("MMMM Do YYYY, h:mm:ss a", data).split(",");
     var newform = moment().calendar(data);
-    console.log(newform);
-    if (arr[0] === today) return `today at ${newArr[1]}`;
-    return newArr[0];
+    // console.log(newform);
+    console.log(common);
+    if (arr[0] === today) {
+      return `today at ${newArr[1]}`;
+    } else {
+      return `posted on ${arr[0]}`;
+    }
   };
 
   React.useEffect(() => {
