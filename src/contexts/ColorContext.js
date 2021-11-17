@@ -11,17 +11,14 @@ const ColorProvider = ({ children }) => {
 
   const DateConvertor = (data) => {
     var arr = data.split("T");
-    var today = moment().format().split("T")[0];
+    var today = moment().format().split("T")[1];
     var common = moment(arr[0], "YYYY-MM-DD").fromNow();
     var newArr = moment().format("MMMM Do YYYY, h:mm:ss a", data).split(",");
     var newform = moment().calendar(data);
     // console.log(newform);
-    console.log(common);
-    if (arr[0] === today) {
-      return `today at ${newArr[1]}`;
-    } else {
-      return `posted on ${arr[0]}`;
-    }
+    // console.log("check", arr[0], today);
+
+    return `posted on ${arr[0]}`;
   };
 
   React.useEffect(() => {

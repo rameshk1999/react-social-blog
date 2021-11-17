@@ -240,7 +240,7 @@ const ProfilePage = () => {
             direction="row"
             justifyContent="center"
             alignItems="center"
-            spacing={2}
+            spacing={3}
           >
             <label htmlFor="icon-button-file">
               {/* <Input accept="image/*" id="icon-button-file" type="file" /> */}

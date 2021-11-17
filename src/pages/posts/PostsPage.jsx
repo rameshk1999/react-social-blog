@@ -9,7 +9,7 @@ const PostsPage = () => {
   const [loading, setLoading] = useState(false);
   const [reload, setReLoad] = useState(false);
   const { user } = React.useContext(ColorContext);
-  console.log(user?._id);
+  // console.log(user?._id);
 
   const addLike = (id) => {
     instance

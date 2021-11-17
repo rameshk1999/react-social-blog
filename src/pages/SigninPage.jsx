@@ -44,11 +44,11 @@ export default function SignIn() {
   const navigate = useNavigate();
   const handleClickVariant = (variant) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("Login Successful", variant);
+    enqueueSnackbar("Signin Successful", { variant });
   };
   const handleClickError = (variant) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("Wrong Credintials", variant);
+    enqueueSnackbar("Wrong Credintials", { variant });
   };
 
   const handleSubmit = (event) => {
