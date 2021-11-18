@@ -62,6 +62,7 @@ const ProfilePage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [posts, setPosts] = React.useState();
+  const [likePosts, setLikePosts] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [photos, setPhotos] = React.useState([]);
   const [password, setPassword] = React.useState("");
@@ -80,10 +81,22 @@ const ProfilePage = () => {
           setPhotos(res.data.data.filter((post) => post.photo));
           console.log(
             "post",
-            res.data.data.filter((post) => post.photo),
+            //res.data.data.filter((post) => post.photo),
             res.data.data
           );
         }
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+    instance
+      .get(`/api/users/getuserdata/${user?._id}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setLikePosts(res.data.data.likedPosts);
+        }
+        console.log("likes", res);
+        setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
@@ -336,10 +349,18 @@ const ProfilePage = () => {
               )}
             </TabPanel>
             <TabPanel value={2}>
-              <FavouritePosts />
+              {likePosts && likePosts.length ? (
+                <FavouritePosts likePosts={likePosts} />
+              ) : (
+                "You have no Saved Posts"
+              )}
             </TabPanel>
             <TabPanel value={3}>
-              <LikedPosts />
+              {likePosts && likePosts.length ? (
+                <LikedPosts likePosts={likePosts} />
+              ) : (
+                "You have no Liked Posts"
+              )}
             </TabPanel>
           </TabContext>
         </Paper>

@@ -2,6 +2,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
+import { useNavigate } from "react-router-dom";
 
 function srcset(image, size, rows = 2, cols = 2) {
   return {
@@ -13,6 +14,7 @@ function srcset(image, size, rows = 2, cols = 2) {
 }
 
 const MyPosts = ({ posts }) => {
+  let naviagate = useNavigate();
   return (
     <Box m={2}>
       <ImageList
@@ -30,6 +32,7 @@ const MyPosts = ({ posts }) => {
               rows={item.rows || 1}
             >
               <img
+                onClick={() => naviagate(`/posts/${item._id}`)}
                 {...srcset(item.photo, 121, item.rows, item.cols)}
                 alt={item.title}
                 loading="lazy"

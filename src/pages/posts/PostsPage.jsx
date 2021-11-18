@@ -11,13 +11,27 @@ const PostsPage = () => {
   const { user } = React.useContext(ColorContext);
   // console.log(user?._id);
 
-  const addLike = (id) => {
+  const addLike = (id, photo) => {
+    console.log("like", id, photo);
     instance
       .put("/api/posts/like", { postId: id, userId: user?._id })
       .then((res) => {
         // console.log(res);
         setReLoad(true);
         setReLoad(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    instance
+      .put("/api/users/likedpost", {
+        postId: id,
+        postImage: photo,
+        userId: user?._id,
+      })
+      .then((res) => {
+        console.log("add to liked post");
       })
       .catch((err) => {
         console.log(err);

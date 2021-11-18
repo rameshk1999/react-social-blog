@@ -124,7 +124,9 @@ export default function RecipeReviewCard({ post, addLike, unLike }) {
       <CardActions disableSpacing>
         <IconButton
           aria-label="add to favorites"
-          onClick={() => (result ? unLike(post?._id) : addLike(post?._id))}
+          onClick={() =>
+            result ? unLike(post?._id) : addLike(post?._id, post.photo)
+          }
         >
           <FavoriteIcon color={result ? "error" : ""} />
         </IconButton>
