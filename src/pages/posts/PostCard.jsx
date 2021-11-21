@@ -49,7 +49,7 @@ const style = {
   p: 4,
 };
 
-export default function RecipeReviewCard({ post, addLike, unLike }) {
+export default function RecipeReviewCard({ setPosts, post, addLike, unLike }) {
   const { DateConvertor, user } = React.useContext(ColorContext);
   const { pathname } = useLocation();
   const [open, setOpen] = React.useState(false);
@@ -85,11 +85,23 @@ export default function RecipeReviewCard({ post, addLike, unLike }) {
       .then((res) => {
         console.log(res);
         setComment("");
+        instance
+          .get("/api/posts/getall")
+          .then((res) => {
+            if (res.status === 200) {
+              setPosts(res.data.data);
+              // setLoading(false);
+              // console.log(res.data.data);
+            }
+          })
+          .catch((err) => {
+            // setLoading(false);
+          });
       })
       .catch((err) => {
         console.log(err.message);
       });
-
+    handleClose();
     console.log("coment added", payload);
   };
 
@@ -101,11 +113,11 @@ export default function RecipeReviewCard({ post, addLike, unLike }) {
             R
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton aria-label="settings">
+        //     <MoreVertIcon />
+        //   </IconButton>
+        // }
         title={post?.username}
         subheader={DateConvertor(post.updatedAt)}
       />

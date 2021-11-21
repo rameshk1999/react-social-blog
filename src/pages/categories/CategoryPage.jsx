@@ -41,13 +41,15 @@ const CategoryPage = () => {
     );
   return (
     <div>
-      {categories && categories.length && (
+      {categories && categories.length ? (
         <Box sx={{ textAlign: "center", m: 2 }}>
           <Typography variant="button">Categories</Typography>
           {categories.map((category) => (
             <CategoryCard key={category._id} category={category} />
           ))}
         </Box>
+      ) : (
+        ""
       )}
     </div>
   );

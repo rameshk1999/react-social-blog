@@ -32,6 +32,18 @@ const PostsPage = () => {
       })
       .then((res) => {
         console.log("add to liked post");
+        instance
+          .get("/api/posts/getall")
+          .then((res) => {
+            if (res.status === 200) {
+              setPosts(res.data.data);
+              // setLoading(false);
+              // console.log(res.data.data);
+            }
+          })
+          .catch((err) => {
+            // setLoading(false);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -45,6 +57,18 @@ const PostsPage = () => {
         // console.log(res);
         setReLoad(true);
         setReLoad(false);
+        instance
+          .get("/api/posts/getall")
+          .then((res) => {
+            if (res.status === 200) {
+              setPosts(res.data.data);
+              // setLoading(false);
+              // console.log(res.data.data);
+            }
+          })
+          .catch((err) => {
+            // setLoading(false);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -65,7 +89,7 @@ const PostsPage = () => {
       .catch((err) => {
         setLoading(false);
       });
-  }, [reload]);
+  }, []);
 
   if (loading)
     return (
@@ -95,6 +119,8 @@ const PostsPage = () => {
             <PostCard
               key={post._id}
               post={post}
+              posts={posts}
+              setPosts={setPosts}
               addLike={addLike}
               unLike={unLike}
             />
