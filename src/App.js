@@ -9,6 +9,7 @@ import Profile from "./pages/profile/ProfilePage";
 import { ColorContext } from "./contexts/ColorContext";
 import SinglePost from "./pages/posts/SinglePost";
 import NotFound from "./components/NotFound";
+import EmailVerify from "./pages/auth/EmailVerify";
 
 const App = () => {
   const { user } = useContext(ColorContext);
@@ -22,6 +23,7 @@ const App = () => {
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/profile" element={<Profile />} />{" "}
           <Route exact path="/posts/:id" element={<SinglePost />} />
+          <Route exact path="/:id" element={<EmailVerify />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
