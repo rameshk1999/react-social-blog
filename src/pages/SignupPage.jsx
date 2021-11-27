@@ -40,7 +40,7 @@ export default function SignUp() {
   const { enqueueSnackbar } = useSnackbar();
   const handleClickVariant = (variant) => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("signup successgully, please Login Now", { variant });
+    enqueueSnackbar("Please verify Email, to login", { variant });
   };
   const navigate = useNavigate();
 

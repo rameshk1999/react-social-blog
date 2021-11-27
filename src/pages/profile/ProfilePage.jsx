@@ -79,11 +79,6 @@ const ProfilePage = () => {
           setPosts(res.data.data);
           setLoading(false);
           setPhotos(res.data.data.filter((post) => post.photo));
-          console.log(
-            "post",
-            //res.data.data.filter((post) => post.photo),
-            res.data.data
-          );
         }
       })
       .catch((err) => {
