@@ -51,6 +51,11 @@ export default function SignIn() {
     enqueueSnackbar("Wrong Credintials", { variant });
   };
 
+  const handleEmailError = (variant) => {
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar("Please verify your Email", { variant });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -64,10 +69,14 @@ export default function SignIn() {
     instance.post("api/auth/login", payload).then((res) => {
       console.log(res);
       if (res.status === 200) {
-        handleClickVariant("success");
-        localStorage.setItem("user-data", JSON.stringify(res.data.data));
-        navigate("/");
-        window.location.reload();
+        if (res.data.data.isEmailVerified) {
+          handleClickVariant("success");
+          localStorage.setItem("user-data", JSON.stringify(res.data.data));
+          navigate("/");
+          window.location.reload();
+        } else {
+          handleEmailError("error");
+        }
       } else {
         handleClickError("error");
       }
