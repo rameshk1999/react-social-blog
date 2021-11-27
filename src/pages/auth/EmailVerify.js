@@ -12,27 +12,18 @@ function EmailVerify() {
 
   const [isVerified, setIsVerified] = React.useState(false);
   const { user } = React.useContext(ColorContext);
+
   const handleLogout = () => {
     localStorage.removeItem("user-data");
+    window.setTimeout(function () {
+      window.location.reload();
+    }, 200);
   };
 
   useEffect(() => {
     console.log(token.id, string);
     if (user) {
-      handleLogout()
-        .then(() => {
-          instance
-            .get(`/api/users/verify/${token.id}?username=${string}`)
-            .then((res) => {
-              if (res.status === 200) {
-                setIsVerified(true);
-              }
-            })
-            .catch((err) => {
-              setIsVerified(false);
-            });
-        })
-        .catch((err) => {});
+      return handleLogout();
     } else {
       instance
         .get(`/api/users/verify/${token.id}?username=${string}`)
@@ -62,10 +53,12 @@ function EmailVerify() {
             sx={{
               display: "flex",
               width: "auto",
-              height: 50,
+              height: 100,
               flexDirection: "row",
               alignItems: "center",
               textAlign: "center",
+              m: 3,
+              p: 3,
             }}
           >
             <Typography variant="h5">
